@@ -6,6 +6,12 @@ const cookieParser = require("cookie-parser");
 
 // external import
 const { notFoundHandler, errorHandler } = require("./middlewars/errorHandler");
+const signupRouter = require("./router/signupRouter");
+const loginRouter = require("./router/loginRouter");
+const usersRouter = require("./router/usersRouter");
+const updateUserRoute = require("./router/updateUserRoute");
+const deleteUserRoute = require("./router/deleteUserRoute");
+
 const app = express();
 dotenv.config();
 
@@ -25,6 +31,11 @@ app.use(express.json());
 app.use(cookieParser(process.env.COOKIE_SECRET));
 
 // routing setup
+app.use("/signup", signupRouter);
+app.use("/login", loginRouter);
+app.use("/users", usersRouter);
+app.use("/users", updateUserRoute);
+app.use("/remove", deleteUserRoute);
 
 // error handling for 404
 app.use(notFoundHandler);
