@@ -2,10 +2,10 @@
 const express = require("express");
 
 // internal import
-const { dosignup } = require("../controller/doSignup");
+const { signupController } = require("../controller/signupController");
 
 const router = express.Router();
 
-router.post("/", dosignup);
+router.post("/api/signup", signupController);
 
 module.exports = router;

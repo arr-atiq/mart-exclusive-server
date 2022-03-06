@@ -1,47 +1,21 @@
 // internal import
 const express = require("express");
 const dotenv = require("dotenv");
-const mongoose = require("mongoose");
-const cookieParser = require("cookie-parser");
+const bodyParser = require("body-parser");
 
-// external import
-const { notFoundHandler, errorHandler } = require("./middlewars/errorHandler");
+// external imports
 const signupRouter = require("./router/signupRouter");
-const loginRouter = require("./router/loginRouter");
-const usersRouter = require("./router/usersRouter");
-const updateUserRoute = require("./router/updateUserRoute");
-const deleteUserRoute = require("./router/deleteUserRoute");
 
 const app = express();
-dotenv.config();
+app.use(bodyParser.json());
 
 // database connection
-mongoose
-  .connect(process.env.MONGO_CONNECTION_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => console.log("database connection successful!"))
-  .catch((err) => console.log(err));
-
-//   request parser
-app.use(express.json());
-
-// cookie parser
-app.use(cookieParser(process.env.COOKIE_SECRET));
+const connectDB = require("./config/dbConnection");
+dotenv.config({ path: "./config/config.env" });
+connectDB();
 
 // routing setup
-app.use("/signup", signupRouter);
-app.use("/login", loginRouter);
-app.use("/users", usersRouter);
-app.use("/users", updateUserRoute);
-app.use("/remove", deleteUserRoute);
-
-// error handling for 404
-app.use(notFoundHandler);
-
-// common error handler
-app.use(errorHandler);
+app.use("/", signupRouter);
 
 // app listen
 app.listen(process.env.PORT, () => {
