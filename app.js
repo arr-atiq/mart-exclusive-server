@@ -4,18 +4,18 @@ const dotenv = require("dotenv");
 const bodyParser = require("body-parser");
 
 // external imports
-const signupRouter = require("./router/signupRouter");
+const userRoutes = require("./src/router/user");
 
 const app = express();
 app.use(bodyParser.json());
 
 // database connection
-const connectDB = require("./config/dbConnection");
-dotenv.config({ path: "./config/config.env" });
+const connectDB = require("./src/config/dbConnection");
+dotenv.config({ path: "./src/config/config.env" });
 connectDB();
 
 // routing setup
-app.use("/", signupRouter);
+app.use("/api", userRoutes);
 
 // app listen
 app.listen(process.env.PORT, () => {
