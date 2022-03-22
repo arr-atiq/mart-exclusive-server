@@ -4,7 +4,7 @@ const dotenv = require("dotenv");
 const bodyParser = require("body-parser");
 
 // external imports
-const userRoutes = require("./src/router/user");
+const userRoutes = require("./src/router/user/auth");
 
 const app = express();
 app.use(bodyParser.json());
