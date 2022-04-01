@@ -1,65 +1,77 @@
 const User = require("../../models/userSchema");
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 
-exports.signupHelper = (req, res) => {
+exports.signupHelper = async (req, res) => {
   // when i created any user it will saved with user collection
   // so first of all i will check if user is exist or not
-  User.findOne({ email: req.body.email }).exec((error, user) => {
-    if (user)
+  try {
+    const userData = await User.findOne({ email: req.body.email });
+    if (userData) {
       return res.status(400).json({
         message: "user already registered!",
       });
+    } else {
+      const { firstName, lastName, email, password } = req.body;
+      const hash_password = await bcrypt.hash(password, 10);
+      const _userSignUpData = new User({
+        firstName,
+        lastName,
+        email,
+        password: hash_password,
+        userName: Math.random().toString(),
+      });
 
-    const { firstName, lastName, email, password } = req.body;
-    const _user = new User({
-      firstName,
-      lastName,
-      email,
-      password,
-      userName: Math.random().toString(),
-    });
+      _userSignUpData.save((error, data) => {
+        if (error) {
+          return res.status(400).json({
+            message: "Signup faild!",
+          });
+        }
 
-    _user.save((error, data) => {
-      if (error) {
-        return res.status(400).json({
-          message: "something went wrong",
-        });
-      }
-
-      if (data) {
-        return res.status(200).json({
-          message: "User created successfully!",
-        });
-      }
-    });
-  });
-};
-
-exports.signinHelper = (req, res) => {
-  User.findOne({ email: req.body.email }).exec((error, user) => {
-    if (!user) {
-      res.status(400).json({
-        message: "email does not exists!",
+        if (data) {
+          return res.status(200).json({
+            message: "User created successfully!",
+          });
+        }
       });
     }
-    if (user) {
-      if (user.authenticate(req.body.password)) {
-        const token = jwt.sign({ _id: user._id }, process.env.COOKIE_SECRET, {
-          expiresIn: "1h",
-        });
-        res.status(200).json({
-          token,
-        });
-      } else {
-        return res.status(400).json({ message: "invalid password!" });
-      }
-    }
-  });
+  } catch {
+    res.status(400).json({ message: "Something was wrong!" });
+  }
 };
 
-exports.afterSignin = (req, res, next) => {
-  const token = req.headers.authorization.split("")[1];
-  const user = jwt.verify(token, process.env.COOKIE_SECRET);
-  req.user = user;
-  next();
+exports.signinHelper = async (req, res) => {
+  try {
+    const foundUser = await User.find({ email: req.body.email });
+
+    // password validate when user have found
+    if (foundUser && foundUser.length > 0) {
+      const isValidPassword = await bcrypt.compare(
+        req.body.password,
+        foundUser[0].password
+      );
+      if (isValidPassword) {
+        // now we will generate toke because password was valid
+        // when we will use jwt first argument will be which data i will give in this token,second argument will be secrat key
+        const token = jwt.sign(
+          { userName: foundUser[0].userName, lastName: foundUser[0].lastName },
+          process.env.COOKIE_SECRET,
+          { expiresIn: "1h" }
+        );
+        res.status(200).json({
+          access_token: token,
+          message: "Login successful!",
+        });
+      }
+    } else {
+      res.status(400).json({
+        message: "Email does not exists!",
+      });
+    }
+  } catch {
+    res.status(400).json({
+      message: "Something went wrong!",
+    });
+  }
 };
