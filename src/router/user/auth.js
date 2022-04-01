@@ -1,9 +1,13 @@
 const express = require("express");
 const { signupHelper, signinHelper } = require("../../controller/user/auth");
 const checkLogin = require("../../middlewares/checkLogin");
+const {
+  signupValidator,
+  isSignUpValidated,
+} = require("../../validators/signupValidator");
 const router = express.Router();
 
-router.post("/signup", signupHelper);
+router.post("/signup", signupValidator, isSignUpValidated, signupHelper);
 
 router.post("/signin", signinHelper);
 
