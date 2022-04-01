@@ -20,7 +20,20 @@ exports.addCategory = async (req, res) => {
     } else {
       res.status(400).json({ error: "Added category failed" });
     }
-  } catch (error) {
-    res.status(400).json({ error: error });
+  } catch {
+    res.status(400).json({ error: "something went wrong!" });
+  }
+};
+
+exports.getCategories = async (req, res) => {
+  try {
+    const categoriesData = await Category.find();
+    if (categoriesData.length > 0) {
+      res.status(200).json({ categoriesData });
+    } else {
+      res.status(400).json({ error: "Category did not find!" });
+    }
+  } catch {
+    res.status(400).json({ error: "something went wrong!" });
   }
 };

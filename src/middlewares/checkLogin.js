@@ -9,7 +9,7 @@ const checkLogin = (req, res, next) => {
     req.username = username;
     next();
   } catch {
-    next("Authentication failed! Access denied");
+    res.status(400).json({ message: "Authentication failed! Access denied" });
   }
 };
 
