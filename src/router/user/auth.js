@@ -2,14 +2,15 @@ const express = require("express");
 const { signupHelper, signinHelper } = require("../../controller/user/auth");
 const checkLogin = require("../../middlewares/checkLogin");
 const {
-  signupValidator,
-  isSignUpValidated,
+  validateSignupRequest,
+  validateSigninRequest,
+  isRequestValidated,
 } = require("../../validators/signupValidator");
 const router = express.Router();
 
-router.post("/signup", signupValidator, isSignUpValidated, signupHelper);
+router.post("/signup", validateSignupRequest, isRequestValidated, signupHelper);
 
-router.post("/signin", signinHelper);
+router.post("/signin", validateSigninRequest, isRequestValidated, signinHelper);
 
 router.post("/profile", checkLogin, (req, res) => [
   res.status(200).json({ message: "user profile!" }),
