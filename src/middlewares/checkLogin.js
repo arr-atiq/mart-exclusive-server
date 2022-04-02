@@ -5,8 +5,8 @@ const checkLogin = (req, res, next) => {
   try {
     const token = authorization.split(" ")[1];
     const decode = jwt.verify(token, process.env.COOKIE_SECRET);
-    const { username } = decode;
-    req.username = username;
+    const { role } = decode;
+    req.body.role = role;
     next();
   } catch {
     res.status(400).json({ message: "Authentication failed! Access denied" });

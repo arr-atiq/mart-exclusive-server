@@ -20,6 +20,7 @@ exports.signupHelper = async (req, res) => {
         email,
         password: hash_password,
         userName: Math.random().toString(),
+        role: "admin",
       });
 
       _userSignUpData.save((error, data) => {
@@ -55,13 +56,18 @@ exports.signinHelper = async (req, res) => {
         // now we will generate toke because password was valid
         // when we will use jwt first argument will be which data i will give in this token,second argument will be secrat key
         const token = jwt.sign(
-          { userName: foundUser[0].userName, lastName: foundUser[0].lastName },
+          {
+            userName: foundUser[0].userName,
+            lastName: foundUser[0].lastName,
+            role: foundUser[0].role,
+          },
           process.env.COOKIE_SECRET,
           { expiresIn: "1h" }
         );
         res.status(200).json({
           access_token: token,
           message: "Login successful!",
+          role: foundUser[0].role,
         });
       }
     } else {

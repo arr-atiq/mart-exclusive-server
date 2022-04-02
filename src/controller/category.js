@@ -1,6 +1,33 @@
 const Category = require("../models/categorySchema");
 const slugify = require("slugify");
 
+const organisedCategory = (category, parentId = null) => {
+  const categoryListItem = [];
+  let categoryData;
+  if (parentId === null) {
+    categoryData = category.filter((item) => item.parentId === undefined);
+  } else {
+    categoryData = category.filter(
+      (item) => item.parentId === parentId.toString()
+    );
+  }
+
+  for (let item of categoryData) {
+    const categoryObj = {
+      _id: item?._id,
+      name: item?.name,
+      slug: item?.slug,
+      children: organisedCategory(category, item?._id),
+    };
+    if (categoryObj?.children.length < 1) {
+      delete categoryObj?.children;
+    }
+    categoryListItem.push(categoryObj);
+  }
+
+  return categoryListItem;
+};
+
 exports.addCategory = async (req, res) => {
   try {
     const categoryObj = {
@@ -20,8 +47,8 @@ exports.addCategory = async (req, res) => {
     } else {
       res.status(400).json({ error: "Added category failed" });
     }
-  } catch {
-    res.status(400).json({ error: "something went wrong!" });
+  } catch (error) {
+    res.status(400).json({ error: error });
   }
 };
 
@@ -29,11 +56,13 @@ exports.getCategories = async (req, res) => {
   try {
     const categoriesData = await Category.find();
     if (categoriesData.length > 0) {
-      res.status(200).json({ categoriesData });
+      const categoryList = organisedCategory(categoriesData);
+      // console.log(categoryList);
+      res.status(200).json({ categoryList });
     } else {
       res.status(400).json({ error: "Category did not find!" });
     }
-  } catch {
-    res.status(400).json({ error: "something went wrong!" });
+  } catch (error) {
+    res.status(400).json({ getCategoriesError: error });
   }
 };
