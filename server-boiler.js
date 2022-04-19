@@ -6,6 +6,7 @@ const app = express();
 // external imports
 const userRoutes = require("./src/router/user/auth");
 const createCategory = require("./src/router/category");
+const createProduct = require("./src/router/product");
 
 // database connection
 const connectDB = require("./src/config/dbConnection");
@@ -16,6 +17,7 @@ app.use(express.json());
 // routing setup
 app.use("/api", userRoutes);
 app.use("/api", createCategory);
+app.use("/api", createProduct);
 
 // app listen
 app.listen(process.env.PORT, () => {

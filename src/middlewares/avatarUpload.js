@@ -7,5 +7,5 @@ exports.avatarUpload = (req, res, next) => {
     10000,
     "Only .jpg, jpeg or .png format allowed"
   );
-  return upload;
+  upload.array()("productPictures");
 };
