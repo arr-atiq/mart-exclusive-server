@@ -7,6 +7,7 @@ const app = express();
 const userRoutes = require("./src/router/user/auth");
 const createCategory = require("./src/router/category");
 const createProduct = require("./src/router/product");
+const addToCart = require("./src/router/cart");
 
 // database connection
 const connectDB = require("./src/config/dbConnection");
@@ -18,6 +19,7 @@ app.use(express.json());
 app.use("/api", userRoutes);
 app.use("/api", createCategory);
 app.use("/api", createProduct);
+app.use("/api", addToCart);
 
 // app listen
 app.listen(process.env.PORT, () => {
