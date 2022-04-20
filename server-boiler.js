@@ -19,11 +19,11 @@ connectDB();
 app.use(express.json());
 app.use("/public", express.static(path.join(__dirname, "uploads")));
 // routing setup
-app.use("/api", userAuthRoutes);
-app.use("/api", adminAuthRoutes);
-app.use("/api", createCategory);
-app.use("/api", createProduct);
-app.use("/api", addToCart);
+app.use("/mart-exclusive", userAuthRoutes);
+app.use("/mart-exclusive", adminAuthRoutes);
+app.use("/mart-exclusive", createCategory);
+app.use("/mart-exclusive", createProduct);
+app.use("/mart-exclusive", addToCart);
 
 // app listen
 app.listen(process.env.PORT, () => {
