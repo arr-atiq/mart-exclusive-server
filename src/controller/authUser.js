@@ -1,4 +1,4 @@
-const User = require("../../models/userSchema");
+const User = require("../models/userSchema");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
@@ -20,7 +20,7 @@ exports.signupHelper = async (req, res) => {
         email,
         password: hash_password,
         userName: Math.random().toString(),
-        role: "admin",
+        role: "user",
       });
 
       _userSignUpData.save((error, data) => {

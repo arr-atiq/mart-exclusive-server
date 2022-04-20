@@ -5,7 +5,8 @@ const app = express();
 const path = require("path");
 
 // external imports
-const userRoutes = require("./src/router/user/auth");
+const userAuthRoutes = require("./src/router/authUser");
+const adminAuthRoutes = require("./src/router/authAdmin");
 const createCategory = require("./src/router/category");
 const createProduct = require("./src/router/product");
 const addToCart = require("./src/router/cart");
@@ -18,7 +19,8 @@ connectDB();
 app.use(express.json());
 app.use("/public", express.static(path.join(__dirname, "uploads")));
 // routing setup
-app.use("/api", userRoutes);
+app.use("/api", userAuthRoutes);
+app.use("/api", adminAuthRoutes);
 app.use("/api", createCategory);
 app.use("/api", createProduct);
 app.use("/api", addToCart);
