@@ -2,6 +2,7 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const app = express();
+const path = require("path");
 
 // external imports
 const userRoutes = require("./src/router/user/auth");
@@ -15,6 +16,7 @@ dotenv.config({ path: "./src/config/config.env" });
 connectDB();
 
 app.use(express.json());
+app.use("/public", express.static(path.join(__dirname, "uploads")));
 // routing setup
 app.use("/api", userRoutes);
 app.use("/api", createCategory);
